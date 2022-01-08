@@ -20,6 +20,7 @@
 * Oauth2
 * Spring Cloud OpenFeign
 * Spring Data JPA
+* Docker
 * Netflix Eureka Server
 * NetFlix Eureka Client
 ## Users
