@@ -17,6 +17,8 @@
 * Swagger UI
 * MySQL 5
 * Maven 4.0
+* JUnit
+* Mockito
 * Spring Security
 * Oauth2
 * Spring Cloud OpenFeign
