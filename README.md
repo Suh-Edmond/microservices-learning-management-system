@@ -8,7 +8,6 @@
 * User
 * Course
 * QuestionsAndAnswers
-* Security
 ## Tools and Technologies
 * Springboot 2.5
 * Java 11
@@ -71,5 +70,10 @@
 * Get all students of the system [protected]
 * Get all teachers of the system [protected]
 * Get all students enrolled in a course [protected]
+### Project Architecture
+![Project Architecture](assets/ProjectArchitecture.png)
+### Project Database Design
+![Project Architecture](assets/databaseDesign.png)
+
 
 
