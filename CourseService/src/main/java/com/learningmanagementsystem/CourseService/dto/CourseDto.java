@@ -21,4 +21,5 @@ public class CourseDto {
     private String courseImage;
     private BigDecimal price;
     private boolean status;
+
 }

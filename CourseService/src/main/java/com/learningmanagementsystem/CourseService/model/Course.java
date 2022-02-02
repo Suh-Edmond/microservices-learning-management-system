@@ -20,6 +20,7 @@ public class Course  extends  BaseEntity{
     @Id
     @Column(length = 60)
     private String Id;
+    @Column(unique = true)
     private String title;
     private String level;
     @Column(columnDefinition = "LONGTEXT")
