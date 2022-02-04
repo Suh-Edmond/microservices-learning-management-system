@@ -15,7 +15,8 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TeachCourse  extends  BaseEntity{
+public class EnrollCourse  extends  BaseEntity{
+
 
     @Id
     @Column(length = 60)
