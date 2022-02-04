@@ -67,4 +67,49 @@ public class CourseController {
        this.courseService.deleteCourse(courseId, userId);
        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("courses/enroll-student-to-course")
+    public ResponseEntity<MessageResponse> enrollStudentToCourse(@RequestParam("courseId") String courseId, @RequestParam("userId") String userId) {
+        this.courseService.enrollStudentToCourse(courseId, userId);
+        return new ResponseEntity<>(new MessageResponse("success", "Student enrolled to course successfully",new Date()), HttpStatus.CREATED);
+    }
+
+    @GetMapping("courses/get-enrolled-courses-by-student")
+    public ResponseEntity<List<CourseDto>> getAllEnrolledCoursesByStudent(@RequestParam("userId") String userId) {
+        List<Course> courses = this.courseService.getEnrolledCoursesByStudent(userId);
+        List<CourseDto> courseDtos = this.util.getCourseDtoList(courses);
+        return new ResponseEntity<>(courseDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("courses/get-enrolled-course")
+    public ResponseEntity<CourseDto> getAllEnrolledCourseByStudent(@RequestParam("courseId") String courseId, @RequestParam("userId") String userId){
+        Course course = this.courseService.getEnrolledCourseByStudent(courseId, userId);
+        CourseDto courseDto = this.util.getCourseDto(course);
+        return new ResponseEntity<>(courseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("courses")
+    public ResponseEntity<List<CourseDto>> getAllActiveCourses(@RequestParam("status") boolean status){
+        List<Course> courses = this.courseService.getAllByCourses(status);
+        List<CourseDto> courseDtos = this.util.getCourseDtoList(courses);
+        return new ResponseEntity<>(courseDtos, HttpStatus.OK);
+    }
+
+    @PutMapping("courses/approve-course")
+    public ResponseEntity<?> approvedCourse(@RequestParam("courseId") String courseId){
+        this.courseService.approveCourse(courseId);
+        return new ResponseEntity<>(new MessageResponse("success", "Course approved successfully", new Date()), HttpStatus.OK);
+    }
+
+    @PutMapping("courses/suspend-course")
+    public ResponseEntity<?> suspendCourse(@RequestParam("courseId") String courseId){
+        this.courseService.suspendCourse(courseId);
+        return new ResponseEntity<>(new MessageResponse("success", "Course suspended successfully", new Date()), HttpStatus.OK);
+    }
+
+    @DeleteMapping("courses/remove-student-from-course")
+    public ResponseEntity<MessageResponse> removeStudentEnrolledToCourse(@RequestParam("courseId") String courseId, @RequestParam("userId") String userId){
+        this.courseService.removeStudentFromCourse(courseId, userId);
+        return new ResponseEntity<>(new MessageResponse("success", "Student has been remove from course", new Date()), HttpStatus.OK);
+    }
 }
