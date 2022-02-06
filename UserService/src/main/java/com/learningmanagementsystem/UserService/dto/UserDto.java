@@ -1,5 +1,6 @@
 package com.learningmanagementsystem.UserService.dto;
 
+import com.learningmanagementsystem.UserService.model.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
