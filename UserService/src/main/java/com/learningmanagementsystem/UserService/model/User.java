@@ -25,6 +25,7 @@ public class User {
     private String name;
     @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String telephone;
     private String password;
     private  String role;

@@ -180,4 +180,11 @@ public class CourseServiceImpl implements CourseService {
         this.enrollCourseRepository.delete(enrollCourse.get());
     }
 
+    @Override
+    public List<String> getAllStudentsEnrollCourse(String courseId) {
+        List<String> studentIds = this.teachCourseRepository.findAll().
+                stream().filter(teachCourse -> teachCourse.getCourseId().equals(courseId)).map(teachCourse -> teachCourse.getUserId()).collect(Collectors.toList());
+        return studentIds;
+    }
+
 }

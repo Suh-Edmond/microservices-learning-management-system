@@ -21,6 +21,6 @@ public interface CourseService {
     public void approveCourse(String courseId);
     public void suspendCourse(String courseId);
     public void removeStudentFromCourse(String courseId, String userId);
-
+    public List<String> getAllStudentsEnrollCourse(String courseId);
 
 }
