@@ -112,4 +112,10 @@ public class CourseController {
         this.courseService.removeStudentFromCourse(courseId, userId);
         return new ResponseEntity<>(new MessageResponse("success", "Student has been remove from course", new Date()), HttpStatus.OK);
     }
+
+    @GetMapping("students/courses")
+    public ResponseEntity<?> getAllStudentsEnrollCourse(@RequestParam("courseId") String courseId){
+        List<String> studentIds = this.courseService.getAllStudentsEnrollCourse(courseId);
+        return new ResponseEntity<>(studentIds, HttpStatus.OK);
+    }
 }
