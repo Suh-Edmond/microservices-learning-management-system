@@ -1,9 +1,10 @@
 
 # Learning Management System API
- REST Microservice Architecture for a Learning Management System with SpringBoot, Cloud and three Microservices. This project is aimed at learning how to create microservices with spring boot. I seek to create a simple learning system with three users namely; Admin, Teachers, and Students.
- The Admin manages courses, teachers and students.
- Teachers can create a course, provide the course content(syllabus) and notes as pdf documents and also provide answers to questions that will be ask by students enrolled to the course. 
- Students can enroll to any course, download the course syllabus and notes, and ask or answer any questions related to the course notes.
+REST Microservice Architecture for a Learning Management System with SpringBoot, Cloud and three Microservices. This project is aim at learning how to create      Microservices using Spring boot,and Spring cloud, explore and appreciate the different Technologies and Tools that are use to develop systems that run using Microservice Architecture. 
+Hence, I seek to create a simple learning system with three users namely; Admin, Teachers, and Students.
+The Admin manages courses, teachers and students.
+Teachers can create a course, provide the course content(syllabus) and course notes as pdf documents, provide answers to questions that will be ask by students enrolled to the course. 
+Students can enroll to any course, download the course syllabus and notes, and ask or answer any questions related to the course notes.
 ## Microservices
 * User
 * Course
@@ -47,7 +48,7 @@
 * All variables must follow the camel-case style
 * All public endpoints should follow this convention: {server-name}/api/public/v1/{end-point-name}
 * All public endpoints should follow this convention: {server-name}/api/protected/v1/{end-point-name}
-### Endpoints to be created
+### Some of the Endpoints to be created
 * Register User( Teacher and Student) [public]
 * Login User ( Admin, Teacher, Student) [public]
 * Show user profile [protected]
@@ -71,6 +72,7 @@
 * Get all students of the system [protected]
 * Get all teachers of the system [protected]
 * Get all students enrolled in a course [protected]
+* Approve Teachers
 ### Project Architecture
 ![Project Architecture](assets/ProjectArchitecture.png)
 ### Project Database Design
