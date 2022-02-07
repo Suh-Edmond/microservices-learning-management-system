@@ -1,6 +1,6 @@
 
 # Learning Management System API
- REST Microservice Architecture for a Learning Management System with SpringBoot, Cloud and three Microservices. This porject is objective at learning how to create microservices with spring boot. We seek to create a simple learning system with three users namely; Admin, Teachers, and Students.
+ REST Microservice Architecture for a Learning Management System with SpringBoot, Cloud and three Microservices. This project is aimed at learning how to create microservices with spring boot. I seek to create a simple learning system with three users namely; Admin, Teachers, and Students.
  The Admin manages courses, teachers and students.
  Teachers can create a course, provide the course content(syllabus) and notes as pdf documents and also provide answers to questions that will be ask by students enrolled to the course. 
  Students can enroll to any course, download the course syllabus and notes, and ask or answer any questions related to the course notes.
@@ -8,6 +8,7 @@
 * User
 * Course
 * QuestionsAndAnswers
+* FileStorage Service
 ## Tools and Technologies
 * Springboot 2.5
 * Java 11
