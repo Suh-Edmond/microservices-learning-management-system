@@ -74,7 +74,7 @@ Students can enroll to any course, download the course syllabus and notes, and a
 * Get all students enrolled in a course [protected]
 * Approve Teachers
 ### Project Architecture
-![Project Architecture](assets/ProjectArchitecture.png)
+![Project Architecture](assets/ProjectArchitectureUpdated.png)
 ### Project Database Design
 ![Project Architecture](assets/databaseDesign.png)
 
