@@ -20,11 +20,11 @@ public class Question  extends  BaseEntity{
     @Column(length = 50)
     private String Id;
     private String courseId;
-    private String studentId;
+    private String userId;
     @Column(nullable = true)
     private String image;
     @Column(columnDefinition = "MEDIUMTEXT")
-    private String subject;
+    private String topic;
     @Column(columnDefinition = "LONGTEXT")
     private String details;
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval=true)
