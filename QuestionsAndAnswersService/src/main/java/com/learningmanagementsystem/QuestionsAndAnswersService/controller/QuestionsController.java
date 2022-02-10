@@ -2,7 +2,7 @@ package com.learningmanagementsystem.QuestionsAndAnswersService.controller;
 
 
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.QuestionDto;
-import com.learningmanagementsystem.QuestionsAndAnswersService.dto.QuestionPayload;
+import com.learningmanagementsystem.QuestionsAndAnswersService.dto.payload.QuestionPayload;
 import com.learningmanagementsystem.QuestionsAndAnswersService.model.Question;
 import com.learningmanagementsystem.QuestionsAndAnswersService.service.serviceImpl.QuestionServiceImpl;
 import com.learningmanagementsystem.QuestionsAndAnswersService.util.MessageResponse;

@@ -20,7 +20,7 @@ public class Answer extends BaseEntity{
     @Id
     @Column(length = 50)
     private String Id;
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String response;
     @Column(columnDefinition = "LONGTEXT")
     private String details;
