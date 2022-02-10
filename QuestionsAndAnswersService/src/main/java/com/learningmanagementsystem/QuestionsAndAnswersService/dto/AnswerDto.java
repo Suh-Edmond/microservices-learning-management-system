@@ -1,6 +1,5 @@
 package com.learningmanagementsystem.QuestionsAndAnswersService.dto;
 
-import com.learningmanagementsystem.QuestionsAndAnswersService.model.Question;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +16,5 @@ public class AnswerDto {
     private String details;
     private String image;
     private String replierId;
-    private Question question;
+    private String questionId;
 }

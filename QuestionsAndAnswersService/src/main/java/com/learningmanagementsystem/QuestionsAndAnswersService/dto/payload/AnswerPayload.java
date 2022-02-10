@@ -1,6 +1,6 @@
-package com.learningmanagementsystem.QuestionsAndAnswersService.dto;
+package com.learningmanagementsystem.QuestionsAndAnswersService.dto.payload;
 
-
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,21 +9,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class QuestionPayload {
+@ApiModel
+public class AnswerPayload {
 
     @NotNull
     @NotBlank
-    @Size(max = 255)
-    private String topic;
+    private String response;
     @NotNull
     @NotBlank
     private String details;
-
+    @NotNull
+    @NotBlank
+    private String replierId;
     private MultipartFile image;
 }

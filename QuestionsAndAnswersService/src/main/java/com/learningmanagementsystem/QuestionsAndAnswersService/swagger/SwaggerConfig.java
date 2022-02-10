@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfo(
-                "Questions ad Answer Service",
+                "Questions and Answer Service",
                 "Question and Answer Service REST API Documentation",
                 "1",
                 "Terms of service",
