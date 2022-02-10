@@ -16,9 +16,9 @@ public class QuestionDto {
 
     private String Id;
     private String courseId;
-    private String studentId;
+    private String userId;
     private String image;
-    private String subject;
+    private String topic;
     private String details;
     private List<Answer> answers;
 }

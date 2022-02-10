@@ -1,6 +1,7 @@
 package com.learningmanagementsystem.QuestionsAndAnswersService.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class Answer extends BaseEntity{
     private String response;
     @Column(columnDefinition = "LONGTEXT")
     private String details;
+    @Column(nullable = true)
     private String image;
     private String replierId;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Question question;
 
 }
