@@ -64,11 +64,11 @@ public class ControllerExceptionAdvice  extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.CONFLICT);
 	}
 
-    @ExceptionHandler(CustomIOException.class)
-    public ResponseEntity<Object> handleIOException(Exception exception, WebRequest webRequest){
-        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(CustomIOException.class)
+//    public ResponseEntity<Object> handleIOException(Exception exception, WebRequest webRequest){
+//        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
+//        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler(UnAuthorizedException.class)
     public ResponseEntity<Object> handleUnAuthorizedException(Exception exception, WebRequest webRequest){
@@ -82,9 +82,9 @@ public class ControllerExceptionAdvice  extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAnyOtherException(Exception exception, WebRequest webRequest){
-        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> handleAnyOtherException(Exception exception, WebRequest webRequest){
+//        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
+//        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }
