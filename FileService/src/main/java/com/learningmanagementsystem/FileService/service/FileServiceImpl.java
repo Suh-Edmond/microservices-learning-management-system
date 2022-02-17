@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -23,6 +22,7 @@ import java.util.List;
 public class FileServiceImpl implements  FileService{
 
     private final String baseDir = "uploads";
+    private final String basePath = "/api/v1/protected/downloadFile";
 
     @Override
     public void saveFile(String appName, MultipartFile file, String courseName, String fileCategory) {
@@ -49,20 +49,25 @@ public class FileServiceImpl implements  FileService{
     }
 
     @Override
-    public String getCourseImage(String courseImageName) {
+    public String getCourseImage(String appName, String courseName, String courseImageName, String fileCategory) {
         String courseImage = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/v1/protected/downloadFile/").path(courseImageName).toUriString();
+                .path(this.basePath).queryParam("appName", appName).queryParam("courseName", courseName).
+                 queryParam("fileName", courseImageName).
+                 queryParam("fileType", fileCategory).toUriString();
         return courseImage;
     }
 
 
     @Override
-    public List<File> getCourseNotes(String appName, MultipartFile file, String courseName) {
+    public List<String> getCourseNotes(String appName, MultipartFile file, String courseName) {
+
+
+
         return null;
     }
 
     @Override
-    public List<File> getCourseSyllabus(String appName, MultipartFile file, String courseName) {
+    public List<String> getCourseSyllabus(String appName, MultipartFile file, String courseName) {
         return null;
     }
 

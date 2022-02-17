@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/protected")
+@RequestMapping("/api/v1/protected/")
 public class FileController {
 
     @Autowired
@@ -34,7 +34,7 @@ public class FileController {
         return new ResponseEntity<>(new MessageResponse("success", "File uploaded successfully",new Date()), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/downloadFile")
+    @GetMapping(path = "downloadFile")
     public ResponseEntity<?> downloadFile(@RequestParam("fileName") String fileName, @RequestParam("appName") String appName,
                                           @RequestParam("courseName") String courseName,
                                           @RequestParam("fileType") FileCategory fileCategory, HttpServletRequest httpServletRequest){
@@ -49,9 +49,12 @@ public class FileController {
                 header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ resource.getFilename() + "\"").body(resource);
     }
 
-    @GetMapping("course-images/{fileName:.+}")
-    public ResponseEntity<MessageResponse> getCourseImage(@PathVariable String fileName, HttpServletRequest request){
-        String courseImage = this.fileService.getCourseImage(fileName);
+    @GetMapping("course-images")
+    public ResponseEntity<MessageResponse> getCourseImage(@RequestParam("appName") String appName,
+                                                            @RequestParam("courseName") String courseName,
+                                                            @RequestParam("fileType") FileCategory fileCategory,
+                                                          @RequestParam String fileName){
+        String courseImage = this.fileService.getCourseImage(appName, courseName, fileName, fileCategory.toString());
         return new ResponseEntity<>(new MessageResponse("success", courseImage, new Date()), HttpStatus.OK);
     }
 
