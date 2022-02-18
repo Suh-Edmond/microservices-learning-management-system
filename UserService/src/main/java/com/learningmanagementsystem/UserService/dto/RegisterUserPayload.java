@@ -44,7 +44,6 @@ public class RegisterUserPayload {
     private String confirmPassword;
 
     @NotNull
-    @NotBlank
-    private String role;
+    private ERole role;
 
 }
