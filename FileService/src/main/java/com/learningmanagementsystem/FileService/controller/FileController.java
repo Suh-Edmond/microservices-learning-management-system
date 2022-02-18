@@ -4,6 +4,7 @@ package com.learningmanagementsystem.FileService.controller;
 import com.learningmanagementsystem.FileService.exception.FileStorageException;
 import com.learningmanagementsystem.FileService.model.FileCategory;
 import com.learningmanagementsystem.FileService.model.MessageResponse;
+import com.learningmanagementsystem.FileService.model.UploadFileResponse;
 import com.learningmanagementsystem.FileService.service.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -17,28 +18,28 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/protected")
+@RequestMapping("/api/v1/protected/")
 public class FileController {
 
     @Autowired
     private FileServiceImpl fileService;
 
     @PostMapping(path ="upload-files")
-    public ResponseEntity<MessageResponse> uploadFiles( @RequestParam("appName") String appName,
-                                                           @RequestParam("courseName") String courseName,
-                                                           @RequestParam("fileType") FileCategory fileCategory,
+    public ResponseEntity<MessageResponse> uploadFiles(@RequestParam("courseName") String courseName,
+                                                           @RequestParam("fileCategory") FileCategory fileCategory,
                                                            @RequestPart(value = "file", required = true) MultipartFile multipartFile){
-        this.fileService.saveFile(appName, multipartFile, courseName, fileCategory.toString());
+        this.fileService.saveFile(multipartFile, courseName, fileCategory.toString());
         return new ResponseEntity<>(new MessageResponse("success", "File uploaded successfully",new Date()), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/downloadFile")
-    public ResponseEntity<?> downloadFile(@RequestParam("fileName") String fileName, @RequestParam("appName") String appName,
+    @GetMapping(path = "downloadFile")
+    public ResponseEntity<?> downloadFile(@RequestParam("fileName") String fileName,
                                           @RequestParam("courseName") String courseName,
-                                          @RequestParam("fileType") FileCategory fileCategory, HttpServletRequest httpServletRequest){
-        Resource resource = this.fileService.loadFileAsResource(appName, courseName, fileCategory.toString(), fileName);
+                                          @RequestParam("fileCategory") FileCategory fileCategory, HttpServletRequest httpServletRequest){
+        Resource resource = this.fileService.loadFileAsResource(courseName, fileCategory.toString(), fileName);
         String contentType = null;
         try {
             contentType = httpServletRequest.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -49,10 +50,18 @@ public class FileController {
                 header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ resource.getFilename() + "\"").body(resource);
     }
 
-    @GetMapping("course-images/{fileName:.+}")
-    public ResponseEntity<MessageResponse> getCourseImage(@PathVariable String fileName, HttpServletRequest request){
-        String courseImage = this.fileService.getCourseImage(fileName);
-        return new ResponseEntity<>(new MessageResponse("success", courseImage, new Date()), HttpStatus.OK);
+    @GetMapping("course-material")
+    public ResponseEntity<UploadFileResponse> getCourseMaterial(@RequestParam("courseName") String courseName,
+                                                             @RequestParam("fileCategory") FileCategory fileCategory,
+                                                             @RequestParam String fileName){
+        UploadFileResponse response = this.fileService.getCourseMaterial(courseName, fileName, fileCategory.toString());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("course-materials")
+    public ResponseEntity<List<UploadFileResponse>> getCourseMaterials(@RequestParam("courseName") String courseName, @RequestParam("fileCategory") FileCategory fileCategory){
+        List<UploadFileResponse> uploadFileResponseList = this.fileService.getCourseMaterials(courseName, fileCategory.toString());
+        return new ResponseEntity<>(uploadFileResponseList, HttpStatus.OK);
     }
 
 

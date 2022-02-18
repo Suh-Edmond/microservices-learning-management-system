@@ -3,6 +3,7 @@ package com.learningmanagementsystem.FileService.service;
 import com.learningmanagementsystem.FileService.exception.CustomIOException;
 import com.learningmanagementsystem.FileService.exception.FileStorageException;
 import com.learningmanagementsystem.FileService.exception.ResourceNotFoundException;
+import com.learningmanagementsystem.FileService.model.UploadFileResponse;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -13,22 +14,20 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileServiceImpl implements  FileService{
 
     private final String baseDir = "uploads";
+    private final String basePath = "/api/v1/protected/downloadFile";
 
     @Override
-    public void saveFile(String appName, MultipartFile file, String courseName, String fileCategory) {
+    public void saveFile(MultipartFile file, String courseName, String fileCategory) {
         String  finalCourseName = courseName.replaceAll(" ", "");
-        String finalAppName = appName.replaceAll(" ", "");
-        Path courseUploadDir = Paths.get(this.baseDir + "/" + fileCategory + "/" + finalAppName + "/" + finalCourseName ).normalize();
+        Path courseUploadDir = Paths.get(this.baseDir + "/" + fileCategory +  "/" + finalCourseName ).normalize();
         if(!Files.exists(courseUploadDir)){
             try {
                 Files.createDirectories(courseUploadDir);
@@ -49,28 +48,51 @@ public class FileServiceImpl implements  FileService{
     }
 
     @Override
-    public String getCourseImage(String courseImageName) {
-        String courseImage = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/v1/protected/downloadFile/").path(courseImageName).toUriString();
-        return courseImage;
+    public UploadFileResponse getCourseMaterial(String courseName, String fileName, String fileCategory) {
+        UploadFileResponse uploadFileResponse = new UploadFileResponse();
+        String originalCourseName = courseName.replaceAll(" ", "");
+        String downloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(this.basePath).queryParam("courseName", originalCourseName).
+                 queryParam("fileName", fileName).
+                 queryParam("fileCategory", fileCategory).toUriString();
+        Path filePath = Paths.get(this.baseDir + "/" + fileCategory + "/" +originalCourseName).resolve(fileName).normalize();
+        uploadFileResponse.setFileDownloadUri(downloadUri);
+        uploadFileResponse.setFileName(fileName);
+        uploadFileResponse.setFileType(fileName.split("\\.")[1]);
+        try {
+            uploadFileResponse.setFileSize(Files.size(filePath.toAbsolutePath()));
+        } catch (IOException e) {
+            throw new CustomIOException("File path not found");
+        }
+        return uploadFileResponse;
     }
 
-
     @Override
-    public List<File> getCourseNotes(String appName, MultipartFile file, String courseName) {
-        return null;
+    public List<UploadFileResponse> getCourseMaterials(String courseName, String fileCategory) {
+        String finalCourseName = courseName.replaceAll(" ", "");
+        Path directoryPath = Paths.get(this.baseDir + "/" + fileCategory + "/" + finalCourseName).normalize();
+        List<UploadFileResponse> uploadFileResponses = new ArrayList<>();
+        if(Files.exists(directoryPath)){
+            try {
+                DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directoryPath);
+                for(Path path: directoryStream){
+                    String[] splitPath = path.toString().split("/");
+                    int splitPathLength = splitPath.length;
+                    String fileName = splitPath[splitPathLength-1];
+                    UploadFileResponse response = this.getCourseMaterial(courseName, fileName, fileCategory);
+                    uploadFileResponses.add(response);
+                }
+            } catch (IOException e) {
+                throw new CustomIOException("Could not locate course directory path");
+            }
+        }
+        return uploadFileResponses;
     }
 
     @Override
-    public List<File> getCourseSyllabus(String appName, MultipartFile file, String courseName) {
-        return null;
-    }
+    public Resource loadFileAsResource(String courseName, String fileCategory, String fileName) {
 
-
-    @Override
-    public Resource loadFileAsResource(String appName, String courseName, String fileCategory, String fileName) {
-
-        Path path = Paths.get(this.baseDir + "/" + fileCategory + "/" + appName + "/" + courseName).
+        Path path = Paths.get(this.baseDir + "/" + fileCategory + "/" + courseName).
                 resolve(fileName).normalize();
         Resource resource = null;
         try {
@@ -83,6 +105,11 @@ public class FileServiceImpl implements  FileService{
             }else {
                 throw new ResourceNotFoundException("File not found"+ fileName);
             }
+
+    }
+
+    @Override
+    public void deleteFile(String courseName, String fileName, String fileCategory) {
 
     }
 }
