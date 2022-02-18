@@ -64,6 +64,18 @@ public class FileController {
         return new ResponseEntity<>(uploadFileResponseList, HttpStatus.OK);
     }
 
+    @DeleteMapping("course-material")
+    public ResponseEntity<?> deleteFile(@RequestParam("courseName") String courseName, @RequestParam("fileCategory") FileCategory fileCategory, @RequestParam String fileName){
+        this.fileService.deleteFile(courseName, fileName, fileCategory.toString());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("course-material-directory")
+    public ResponseEntity<?> deleteDirectory(@RequestParam("courseName") String courseName, @RequestParam("fileCategory") FileCategory fileCategory){
+        this.fileService.deleteDirectory(courseName, fileCategory.toString());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 
 
 }

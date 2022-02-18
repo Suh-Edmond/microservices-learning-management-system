@@ -56,6 +56,9 @@ public class FileServiceImpl implements  FileService{
                  queryParam("fileName", fileName).
                  queryParam("fileCategory", fileCategory).toUriString();
         Path filePath = Paths.get(this.baseDir + "/" + fileCategory + "/" +originalCourseName).resolve(fileName).normalize();
+        if(!Files.exists(filePath)){
+            throw  new ResourceNotFoundException("File does not exist");
+        }
         uploadFileResponse.setFileDownloadUri(downloadUri);
         uploadFileResponse.setFileName(fileName);
         uploadFileResponse.setFileType(fileName.split("\\.")[1]);
@@ -91,14 +94,17 @@ public class FileServiceImpl implements  FileService{
 
     @Override
     public Resource loadFileAsResource(String courseName, String fileCategory, String fileName) {
-
-        Path path = Paths.get(this.baseDir + "/" + fileCategory + "/" + courseName).
+        String originalCourseName = courseName.replaceAll(" ", "");
+        Path path = Paths.get(this.baseDir + "/" + fileCategory + "/" + originalCourseName).
                 resolve(fileName).normalize();
+        if(!Files.exists(path)){
+            throw new ResourceNotFoundException("File does not exist");
+        }
         Resource resource = null;
         try {
             resource = new UrlResource(path.toUri());
         } catch (MalformedURLException e) {
-            throw new FileStorageException("File path not found");
+            throw new FileStorageException("File path is invalid");
         }
         if(resource.exists()){
                 return resource;
@@ -110,6 +116,23 @@ public class FileServiceImpl implements  FileService{
 
     @Override
     public void deleteFile(String courseName, String fileName, String fileCategory) {
+        String originalCourseName = courseName.replaceAll(" ", "");
+        Path  path = Paths.get(this.baseDir + "/" + fileCategory + "/" + originalCourseName ).resolve(fileName).normalize();
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("File does not exist");
+        }
+    }
 
+    @Override
+    public void deleteDirectory(String courseName, String fileCategory) {
+        String originalCourseName = courseName.replaceAll(" ", "");
+        Path path = Paths.get(this.baseDir + "/" + fileCategory).resolve(originalCourseName).normalize();
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("Directory does not exist");
+        }
     }
 }
