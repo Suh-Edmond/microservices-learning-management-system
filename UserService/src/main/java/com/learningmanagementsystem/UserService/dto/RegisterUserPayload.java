@@ -45,6 +45,6 @@ public class RegisterUserPayload {
 
     @NotNull
     @NotBlank
-    private String role;
+    private ERole role;
 
 }
