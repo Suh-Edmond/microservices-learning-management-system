@@ -14,4 +14,5 @@ public interface FileService {
     public Resource loadFileAsResource(String courseName, String fileCategory, String fileName);
     public void deleteFile(String courseName, String fileName, String fileCategory);
     public void deleteDirectory(String courseName, String fileCategory);
+
 }
