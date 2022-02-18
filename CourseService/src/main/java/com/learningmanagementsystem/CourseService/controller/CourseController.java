@@ -1,8 +1,11 @@
 package com.learningmanagementsystem.CourseService.controller;
 
 import com.learningmanagementsystem.CourseService.dto.CourseDto;
+import com.learningmanagementsystem.CourseService.dto.UserDto;
 import com.learningmanagementsystem.CourseService.dto.payload.CoursePayload;
 import com.learningmanagementsystem.CourseService.model.Course;
+import com.learningmanagementsystem.CourseService.model.ERole;
+import com.learningmanagementsystem.CourseService.proxy.CourseProxy;
 import com.learningmanagementsystem.CourseService.service.serviceImpl.CourseServiceImpl;
 import com.learningmanagementsystem.CourseService.util.MessageResponse;
 import com.learningmanagementsystem.CourseService.util.Util;
@@ -21,9 +24,11 @@ import java.util.List;
 public class CourseController {
 
     @Autowired
-    CourseServiceImpl courseService;
+    private CourseServiceImpl courseService;
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
+    @Autowired
+    private CourseProxy courseProxy;
     Util util = new Util();
 
     @PostMapping("courses/create")
@@ -69,8 +74,9 @@ public class CourseController {
     }
 
     @GetMapping("courses/enroll-student-to-course")
-    public ResponseEntity<MessageResponse> enrollStudentToCourse(@RequestParam("courseId") String courseId, @RequestParam("userId") String userId) {
-        this.courseService.enrollStudentToCourse(courseId, userId);
+    public ResponseEntity<MessageResponse> enrollStudentToCourse(@RequestParam("courseId") String courseId, @RequestParam("userId") String userId,  @RequestParam("role") ERole role) {
+        UserDto userDto = this.courseProxy.getUser(userId, role);
+        this.courseService.enrollStudentToCourse(courseId, userDto.getId());
         return new ResponseEntity<>(new MessageResponse("success", "Student enrolled to course successfully",new Date()), HttpStatus.CREATED);
     }
 
@@ -114,8 +120,8 @@ public class CourseController {
     }
 
     @GetMapping("students/courses")
-    public ResponseEntity<?> getAllStudentsEnrollCourse(@RequestParam("courseId") String courseId){
+    public List<String> getAllStudentIdsEnrollCourse(@RequestParam("courseId") String courseId){
         List<String> studentIds = this.courseService.getAllStudentsEnrollCourse(courseId);
-        return new ResponseEntity<>(studentIds, HttpStatus.OK);
+        return studentIds;
     }
 }

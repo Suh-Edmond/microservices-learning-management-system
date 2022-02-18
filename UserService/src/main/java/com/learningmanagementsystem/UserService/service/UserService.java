@@ -8,9 +8,9 @@ public interface UserService {
 
     public List<User> getAllTeachers();
     public List<User> getAllStudents();
-    public List<User> getAllStudentEnrolledCourse(List<String> studentIds);//need to pass a list of
-    public void deleteUser(String userId);
-    public User getUser(String userId);
+    public List<User> getAllStudentWithInfoEnrolledCourse(List<String> studentIds);
+    public void deleteUser(String userId, String role);
+    public User getUser(String userId, String role);
 
 
 }

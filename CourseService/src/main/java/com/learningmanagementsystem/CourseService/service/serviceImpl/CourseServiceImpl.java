@@ -164,12 +164,14 @@ public class CourseServiceImpl implements CourseService {
     public void approveCourse(String courseId) {
         Course course = this.getCourse(courseId);
         course.setStatus(true);
+        this.courseRepository.save(course);
     }
 
     @Override
     public void suspendCourse(String courseId) {
         Course course = this.getCourse(courseId);
         course.setStatus(false);
+        this.courseRepository.save(course);
     }
 
     @Override

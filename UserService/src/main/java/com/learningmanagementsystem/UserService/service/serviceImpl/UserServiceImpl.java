@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = this.userRepository.
                 findAll().
                 stream().
-                filter(user -> user.getRole().equals(ERole.USER_ROLES.get("teacher"))).
+                filter(user -> user.getRole().equals(ERole.ROLE_TEACHER.toString())).
                 collect(Collectors.toList());
         return users;
     }
@@ -33,25 +33,31 @@ public class UserServiceImpl implements UserService {
         List<User> users = this.userRepository.
                 findAll().
                 stream().
-                filter(user -> user.getRole().equals(ERole.USER_ROLES.get("student"))).
+                filter(user -> user.getRole().equals(ERole.ROLE_STUDENT.toString())).
                 collect(Collectors.toList());
         return users;
     }
 
     @Override
-    public List<User> getAllStudentEnrolledCourse(List<String> studentIds) {
-        List<User> students = studentIds.stream().map(id -> this.getUser(id)).collect(Collectors.toList());
+    public List<User> getAllStudentWithInfoEnrolledCourse(List<String> studentIds) {
+        List<User> students = studentIds.stream().map(id -> this.getStudent(id)).collect(Collectors.toList());
         return students;
     }
 
     @Override
-    public void deleteUser(String userId) {
-        User user = this.getUser(userId);
+    public void deleteUser(String userId, String role) {
+        User user = this.getUser(userId, role);
         this.userRepository.delete(user);
     }
 
     @Override
-    public User getUser(String userId) {
+    public User getUser(String userId, String role) {
+        Optional<User> user = this.userRepository.findAll().stream().filter(user1 -> user1.getId().equals(userId) && user1.getRole().equals(role)).findFirst();
+        user.orElseThrow(() -> new NotFoundException("Resource not found"));
+        return user.get();
+    }
+
+    public User getStudent(String userId){
         Optional<User> user = this.userRepository.findById(userId);
         user.orElseThrow(() -> new NotFoundException("Resource not found"));
         return user.get();

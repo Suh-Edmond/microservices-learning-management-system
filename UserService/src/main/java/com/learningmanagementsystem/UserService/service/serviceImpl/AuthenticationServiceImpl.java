@@ -15,7 +15,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private UserRepository userRepository;
     private Utils utils = new Utils();
-    private ERole eRole = new ERole();
 
     @Override
     public void createUser(User user) {
@@ -29,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         Boolean checkConfirmPassword = utils.checkConfirmPassword(user.getPassword(), user.getConfirmPassword());
-        user.setRole(ERole.USER_ROLES.get(user.getRole()));
+        user.setRole((user.getRole()));
         if(!checkConfirmPassword){
             throw new CustomizedBadCredentialsException("Password mismatch");
         }
