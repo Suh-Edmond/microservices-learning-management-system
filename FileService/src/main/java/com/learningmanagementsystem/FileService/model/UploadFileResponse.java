@@ -1,6 +1,7 @@
 package com.learningmanagementsystem.FileService.model;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.Setter;
 public class UploadFileResponse {
 
     private String fileName;
-    private String fileDownloadUri;
     private String fileType;
-    private long size;
-
+    @ApiModelProperty("File size is in bytes")
+    private Long fileSize;
+    private String fileDownloadUri;
 }
