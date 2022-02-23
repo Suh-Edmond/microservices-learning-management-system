@@ -5,7 +5,6 @@ import com.learningmanagementsystem.UserService.Utils.Utils;
 import com.learningmanagementsystem.UserService.dto.UserDto;
 import com.learningmanagementsystem.UserService.model.ERole;
 import com.learningmanagementsystem.UserService.model.User;
-import com.learningmanagementsystem.UserService.proxy.UserProxy;
 import com.learningmanagementsystem.UserService.service.serviceImpl.UserServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +22,10 @@ public class UserController {
     UserServiceImpl userService;
     @Autowired
     ModelMapper modelMapper;
-    @Autowired
-    private UserProxy userProxy;
     private Utils utils = new Utils();
 
 
-    @GetMapping("teachers")
+    @GetMapping("teachers-all")
     public ResponseEntity<List<UserDto>> getAllTeachers(){
         List<User> users = this.userService.getAllTeachers();
         List<UserDto> userDtos = this.utils.getListUserDto(users);
@@ -36,7 +33,7 @@ public class UserController {
 
     }
 
-    @GetMapping("students")
+    @GetMapping("students-all")
     public ResponseEntity<List<UserDto>> getStudents() {
         List<User> users = this.userService.getAllStudents();
         List<UserDto> userDtos = this.utils.getListUserDto(users);
@@ -57,11 +54,23 @@ public class UserController {
 
     @GetMapping("students/courses")
     public ResponseEntity<List<UserDto>> getAllStudentEnrollCourse(@RequestParam("courseId") String courseId){
-        List<String> studentIds = this.userProxy.getAllStudentIdsEnrollCourse(courseId);
-        List<User> users = this.userService.getAllStudentWithInfoEnrolledCourse(studentIds);
+        List<User> users = this.userService.getAllStudentWithInfoEnrolledCourse(courseId);
         List<UserDto> userDtos = this.utils.getListUserDto(users);
         return new ResponseEntity<>(userDtos, HttpStatus.OK);
     }
 
+    @GetMapping("students")
+    public UserDto getStudent(@RequestParam("userId") String userId){
+        User user = this.userService.getStudent(userId);
+        UserDto userDto = this.modelMapper.map(user, UserDto.class);
+        return userDto;
+    }
+
+    @GetMapping("teachers")
+    public UserDto getTeacher(@RequestParam("userId") String userId){
+        User user = this.userService.getTeacher(userId);
+        UserDto userDto = this.modelMapper.map(user, UserDto.class);
+        return userDto;
+    }
 
 }

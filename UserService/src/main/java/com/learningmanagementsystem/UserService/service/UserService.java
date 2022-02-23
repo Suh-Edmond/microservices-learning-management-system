@@ -8,9 +8,11 @@ public interface UserService {
 
     public List<User> getAllTeachers();
     public List<User> getAllStudents();
-    public List<User> getAllStudentWithInfoEnrolledCourse(List<String> studentIds);
+    public List<User> getAllStudentWithInfoEnrolledCourse(String courseId);
     public void deleteUser(String userId, String role);
     public User getUser(String userId, String role);
+    public User getStudent(String userId);
+    public User getTeacher(String userId);
 
 
 }

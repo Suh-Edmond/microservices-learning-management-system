@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name="course-service", url = "http://192.168.1.29:8100/api/v1/protected/")
-public interface UserProxy {
+@FeignClient(name="course-service", url = "http://10.0.0.16:8100/api/v1/protected/")
+public interface CourseProxy {
     @GetMapping("students/courses")
     public List<String> getAllStudentIdsEnrollCourse(@RequestParam("courseId") String courseId);
 }
