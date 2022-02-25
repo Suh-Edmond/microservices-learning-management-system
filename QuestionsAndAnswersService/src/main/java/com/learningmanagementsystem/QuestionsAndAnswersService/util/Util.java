@@ -42,7 +42,6 @@ public class Util {
         Answer answer = new Answer();
         answer.setResponse(payload.getResponse());
         answer.setDetails(payload.getDetails());
-        answer.setReplierId(payload.getReplierId());
         if(payload.getImage() != null){
             answer.setImage(StringUtils.cleanPath(payload.getImage().getOriginalFilename()));
         }

@@ -1,6 +1,7 @@
 package com.learningmanagementsystem.QuestionsAndAnswersService.controller;
 
 
+import com.learningmanagementsystem.QuestionsAndAnswersService.dto.ERole;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.QuestionDto;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.payload.QuestionPayload;
 import com.learningmanagementsystem.QuestionsAndAnswersService.model.Question;
@@ -25,11 +26,13 @@ public class QuestionsController {
     private QuestionServiceImpl questionService;
     private Util util = new Util();
 
-    @PostMapping(path = "protected/courses/questions", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "protected/users/{userId}/roles/{role}/courses/{courseId}/questions", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<MessageResponse> createQuestion(@Valid @ModelAttribute  QuestionPayload questionPayload,
-                                                          @RequestParam("courseId") String courseId, @RequestParam("userId") String userId){
+                                                          @PathVariable("courseId") String courseId,
+                                                          @PathVariable("userId") String userId,
+                                                          @PathVariable("role") ERole role){
         Question question = this.util.getQuestionFromQuestionPayload(questionPayload);
-        this.questionService.createQuestion(question, courseId, userId);
+        this.questionService.createQuestion(question, courseId, userId, role);
         return new ResponseEntity<>(new MessageResponse("success", "Create question successfully", new Date()), HttpStatus.CREATED);
     }
 
@@ -53,18 +56,22 @@ public class QuestionsController {
         return new ResponseEntity<>(questionDtoList, HttpStatus.OK);
     }
 
-    @PostMapping(path = "protected/courses/questions-update" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "protected/users/{userId}/roles/{role}/courses/questions/{questionId}/update" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public  ResponseEntity<QuestionDto> updateCourseQuestion(@Valid @ModelAttribute QuestionPayload questionPayload,
-                                                             @RequestParam("questionId") String questionId, @RequestParam("userId") String userId){
+                                                             @PathVariable("questionId") String questionId,
+                                                             @PathVariable("userId") String userId,
+                                                             @PathVariable("role") ERole role){
         Question question = this.util.getQuestionFromQuestionPayload(questionPayload);
-        Question updatedQuestion = this.questionService.updateQuestion(question, questionId, userId);
+        Question updatedQuestion = this.questionService.updateQuestion(question, questionId, userId, role);
         QuestionDto questionDto = this.util.getQuestionDto(updatedQuestion);
         return new ResponseEntity<>(questionDto, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("protected/courses/questions")
-    public ResponseEntity<?> deleteQuestion(@RequestParam("questionId") String questionId, @RequestParam("userId") String userId){
-        this.questionService.deleteQuestion(questionId, userId);
+    public ResponseEntity<?> deleteQuestion(@RequestParam("questionId") String questionId,
+                                            @RequestParam("userId") String userId,
+                                            @RequestParam("role") ERole role){
+        this.questionService.deleteQuestion(questionId, userId, role);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

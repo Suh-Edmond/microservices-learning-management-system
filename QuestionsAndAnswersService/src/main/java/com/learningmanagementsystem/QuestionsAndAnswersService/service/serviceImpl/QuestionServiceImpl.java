@@ -1,5 +1,8 @@
 package com.learningmanagementsystem.QuestionsAndAnswersService.service.serviceImpl;
 
+import com.learningmanagementsystem.QuestionsAndAnswersService.dto.CourseDto;
+import com.learningmanagementsystem.QuestionsAndAnswersService.dto.ERole;
+import com.learningmanagementsystem.QuestionsAndAnswersService.dto.UserDto;
 import com.learningmanagementsystem.QuestionsAndAnswersService.exception.ForbiddenException;
 import com.learningmanagementsystem.QuestionsAndAnswersService.exception.ResourceNotFoundException;
 import com.learningmanagementsystem.QuestionsAndAnswersService.model.Question;
@@ -8,6 +11,7 @@ import com.learningmanagementsystem.QuestionsAndAnswersService.service.QuestionS
 import com.learningmanagementsystem.QuestionsAndAnswersService.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +23,18 @@ public class QuestionServiceImpl implements QuestionService {
     private Util util = new Util();
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    UserServiceImpl userService;
+    @Autowired
+    CourseServiceImpl courseService;
 
     @Override
-    public void createQuestion(Question question, String courseId, String userId) {
+    public void createQuestion(Question question, String courseId, String userId, ERole role) {
         question.setId(this.util.generateId());
-        question.setCourseId(courseId);
-        question.setUserId(userId);
+        CourseDto courseDto = this.courseService.getCourseInfoFromCourseService(courseId);
+        UserDto userDto = this.userService.getUserFromUserService(userId, role);
+        question.setCourseId(courseDto.getId());
+        question.setUserId(userDto.getId());
         this.questionRepository.save(question);
     }
 
@@ -43,17 +53,19 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getCourseQuestions(String courseId) {
+        CourseDto courseDto = this.courseService.getCourseInfoFromCourseService(courseId);
         List<Question> questions = this.questionRepository.findAll().
                 stream().
-                filter(question -> question.getCourseId().equals(courseId)).
+                filter(question -> question.getCourseId().equals(courseDto.getId())).
                 collect(Collectors.toList());
         return questions;
     }
 
     @Override
-    public Question updateQuestion(Question question, String questionId, String userId) {
+    public Question updateQuestion(Question question, String questionId, String userId,  ERole role) {
+        UserDto userDto = this.userService.getUserFromUserService(userId, role);
         Question question1 = this.getQuestion(questionId);
-        Question question2 = this.getUserQuestion(question1.getId(), userId);
+        Question question2 = this.getUserQuestion(question1.getId(), userDto.getId());
         question2.setTopic(question.getTopic());
         question2.setDetails(question.getDetails());
         question2.setImage(question.getImage());
@@ -62,9 +74,10 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void deleteQuestion(String questionId, String userId) {
+    public void deleteQuestion(String questionId, String userId, ERole role) {
+        UserDto userDto = this.userService.getUserFromUserService(userId, role);
         Question question1 = this.getQuestion(questionId);
-        Question question2 = this.getUserQuestion(question1.getId(), userId);
+        Question question2 = this.getUserQuestion(question1.getId(), userDto.getId());
         this.questionRepository.delete(question2);
     }
 

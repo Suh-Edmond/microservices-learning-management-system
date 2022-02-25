@@ -52,6 +52,13 @@ public class CourseController {
         return new ResponseEntity<>(courseDtos, HttpStatus.OK);
     }
 
+    @GetMapping("courses/{courseId}")
+    public CourseDto getCourse(@PathVariable("courseId") String courseId){
+        Course course = this.courseService.getCourse(courseId);
+        CourseDto courseDto = this.util.getCourseDto(course);
+        return courseDto;
+    }
+
     @GetMapping("teachers/courses")
     public ResponseEntity<List<CourseDto>> getAllCoursesByTeacher(@RequestParam("userId") String userId){
         List<Course> courses = this.courseService.getAllCoursesByTeacher(userId);
