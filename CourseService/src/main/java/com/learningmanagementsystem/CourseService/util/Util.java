@@ -4,14 +4,11 @@ import com.learningmanagementsystem.CourseService.dto.CourseDto;
 import com.learningmanagementsystem.CourseService.dto.payload.CoursePayload;
 import com.learningmanagementsystem.CourseService.model.Course;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Component
 public class Util {
 
     private ModelMapper modelMapper;
@@ -30,7 +27,14 @@ public class Util {
     }
 
     public CourseDto getCourseDto(Course course){
-        CourseDto courseDto = this.modelMapper.map(course, CourseDto.class);
+
+        CourseDto courseDto = new CourseDto();
+        courseDto.setId(course.getId());
+        courseDto.setTitle(course.getTitle());
+        courseDto.setLevel(course.getLevel());
+        courseDto.setDescription(course.getDescription());
+        courseDto.setPrice(course.getPrice());
+        courseDto.setStatus(course.isStatus());
         return courseDto;
     }
 

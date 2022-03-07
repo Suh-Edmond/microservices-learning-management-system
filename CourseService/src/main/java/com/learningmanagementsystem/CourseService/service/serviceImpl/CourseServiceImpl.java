@@ -1,5 +1,8 @@
 package com.learningmanagementsystem.CourseService.service.serviceImpl;
 
+import com.learningmanagementsystem.CourseService.dto.CourseDto;
+import com.learningmanagementsystem.CourseService.dto.FileCategory;
+import com.learningmanagementsystem.CourseService.dto.UploadFileResponse;
 import com.learningmanagementsystem.CourseService.dto.UserDto;
 import com.learningmanagementsystem.CourseService.exception.ForbiddenException;
 import com.learningmanagementsystem.CourseService.exception.ResourceAlreadyExistException;
@@ -34,6 +37,8 @@ public class CourseServiceImpl implements CourseService {
     EnrollCourseRepository  enrollCourseRepository;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private FileStorageServiceImpl fileStorageService;
     Util util = new Util();
 
     @Override
@@ -47,14 +52,16 @@ public class CourseServiceImpl implements CourseService {
             throw new ResourceAlreadyExistException("Course Title already exist");
         }
         this.addTeacherCourse(userId, createdCourse.getId());
+
         return createdCourse;
     }
 
     @Override
-    public void uploadFile(String courseId, MultipartFile file) {
+    public void uploadFile(String courseId, MultipartFile file, FileCategory fileCategory) {
         Optional<Course> course = this.courseRepository.findById(courseId);
         course.orElseThrow(()-> new ResourceNotFoundException("Resource not found with courseId:"+ courseId));
         course.get().setCourseImage(StringUtils.cleanPath(file.getOriginalFilename()));
+        this.fileStorageService.uploadFile(course.get().getTitle(), fileCategory, file);
         this.courseRepository.save(course.get());
     }
 
@@ -207,7 +214,21 @@ public class CourseServiceImpl implements CourseService {
         this.enrollCourseRepository.delete(enrollCourse.get());
     }
 
+    @Override
+    public Course findCourseByTitle(String title) {
+        Optional<Course> course = this.courseRepository.findByTitle(title);
+        course.orElseThrow(() -> new ResourceNotFoundException("Resource not found with title "+title));
+        return course.get();
+    }
 
+
+
+    public CourseDto generateCourseDto(Course course){
+        UploadFileResponse uploadFileResponse = this.fileStorageService.getCourseMaterial(course.getTitle(), FileCategory.IMAGES, course.getCourseImage());;
+        CourseDto courseDto = this.util.getCourseDto(course);
+        courseDto.setCourseImage(uploadFileResponse);
+        return  courseDto;
+    }
 
 
 }

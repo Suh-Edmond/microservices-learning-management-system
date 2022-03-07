@@ -18,7 +18,7 @@ public class CourseDto {
     private String title;
     private String level;
     private String description;
-    private String courseImage;
+    private UploadFileResponse courseImage;
     private BigDecimal price;
     private boolean status;
 
