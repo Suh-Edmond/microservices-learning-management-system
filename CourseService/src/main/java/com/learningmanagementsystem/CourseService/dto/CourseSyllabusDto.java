@@ -13,12 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CourseNoteDto {
+public class CourseSyllabusDto {
 
     private String Id;
-    private String topic;
     private String courseId;
-    private List<UploadFileResponse> notes;
+    private UploadFileResponse syllabus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

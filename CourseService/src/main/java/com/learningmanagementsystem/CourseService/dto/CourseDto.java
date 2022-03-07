@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +22,7 @@ public class CourseDto {
     private UploadFileResponse courseImage;
     private BigDecimal price;
     private boolean status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }
