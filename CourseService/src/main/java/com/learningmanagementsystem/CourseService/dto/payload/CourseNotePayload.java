@@ -5,37 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class CoursePayload {
-
-
+public class CourseNotePayload {
 
     @NotNull
     @NotBlank
-    @Size(min = 4)
-    private String title;
+    @Size(min = 4, max = 255)
+    private String topic;
 
     @NotNull
-    @NotBlank
-    private String level;
-
-    @NotNull
-    @NotBlank
-    private String description;
-
-    @NotNull
-    @DecimalMin(value = "1.0")
-    private BigDecimal price;
-
-
+    private MultipartFile file;
 }

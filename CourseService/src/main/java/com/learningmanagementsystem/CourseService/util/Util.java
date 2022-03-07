@@ -3,6 +3,7 @@ package com.learningmanagementsystem.CourseService.util;
 import com.learningmanagementsystem.CourseService.dto.CourseDto;
 import com.learningmanagementsystem.CourseService.dto.payload.CoursePayload;
 import com.learningmanagementsystem.CourseService.model.Course;
+import com.learningmanagementsystem.CourseService.model.CourseNote;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public class Util {
         return uuid.toString();
     }
 
-    public List<CourseDto> getCourseDtoList(List<Course> courseList){
-        List<CourseDto> courses = courseList.stream().map(course -> this.getCourseDto(course)).collect(Collectors.toList());
-        return courses;
+    public CourseNote getCourseNoteFromPayload(CoursePayload coursePayload){
+
+        return null;
     }
 
     public CourseDto getCourseDto(Course course){
