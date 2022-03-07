@@ -1,6 +1,7 @@
 package com.learningmanagementsystem.CourseService.util;
 
 import com.learningmanagementsystem.CourseService.dto.CourseDto;
+import com.learningmanagementsystem.CourseService.dto.CourseNoteDto;
 import com.learningmanagementsystem.CourseService.dto.CourseSyllabusDto;
 import com.learningmanagementsystem.CourseService.dto.payload.CoursePayload;
 import com.learningmanagementsystem.CourseService.model.Course;
@@ -55,6 +56,16 @@ public class Util {
         courseSyllabusDto.setUpdatedAt(courseSyllabus.getUpdatedAt());
         courseSyllabusDto.setId(courseSyllabus.getId());
         return courseSyllabusDto;
+    }
+
+    public CourseNoteDto getCourseNoteDto(CourseNote courseNote){
+        CourseNoteDto courseNoteDto = new CourseNoteDto();
+        courseNoteDto.setId(courseNote.getId());
+        courseNoteDto.setCourseId(courseNote.getId());
+        courseNoteDto.setTopic(courseNote.getTopic());
+        courseNoteDto.setCreatedAt(courseNote.getCreatedAt());
+        courseNoteDto.setUpdatedAt(courseNote.getUpdatedAt());
+        return courseNoteDto;
     }
 
 

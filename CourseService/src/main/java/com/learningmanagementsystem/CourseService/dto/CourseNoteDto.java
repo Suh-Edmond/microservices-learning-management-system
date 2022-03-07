@@ -18,7 +18,7 @@ public class CourseNoteDto {
     private String Id;
     private String topic;
     private String courseId;
-    private List<UploadFileResponse> notes;
+    private UploadFileResponse notes;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
