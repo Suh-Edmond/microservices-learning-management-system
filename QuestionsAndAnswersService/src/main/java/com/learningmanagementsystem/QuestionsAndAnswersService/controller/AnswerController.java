@@ -4,6 +4,7 @@ import com.learningmanagementsystem.QuestionsAndAnswersService.dto.AnswerDto;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.ERole;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.payload.AnswerPayload;
 import com.learningmanagementsystem.QuestionsAndAnswersService.model.Answer;
+import com.learningmanagementsystem.QuestionsAndAnswersService.model.FileCategory;
 import com.learningmanagementsystem.QuestionsAndAnswersService.service.serviceImpl.AnswerServiceImpl;
 import com.learningmanagementsystem.QuestionsAndAnswersService.util.MessageResponse;
 import com.learningmanagementsystem.QuestionsAndAnswersService.util.Util;
@@ -29,9 +30,9 @@ public class AnswerController {
     public ResponseEntity<MessageResponse> createAnswer(@Valid @ModelAttribute AnswerPayload answerPayload,
                                                         @PathVariable String questionId,
                                                         @PathVariable String replierId,
-                                                        @PathVariable ERole role) {
-        Answer answer = this.util.getAnswerFromAnswerPayload(answerPayload);
-        this.answerService.createAnswer(answer, questionId, replierId, role);
+                                                        @PathVariable ERole role,
+                                                        @PathVariable FileCategory fileCategory) {
+        this.answerService.createAnswer(answerPayload, questionId, replierId, role, fileCategory);
         return new ResponseEntity<>(new MessageResponse("success", "Create answer successfully", new Date()), HttpStatus.CREATED);
     }
 
@@ -54,9 +55,9 @@ public class AnswerController {
                                                   @PathVariable String questionId,
                                                   @PathVariable String answerId,
                                                   @PathVariable String replierId,
-                                                  @PathVariable ERole role){
-        Answer answer = this.util.getAnswerFromAnswerPayload(answerPayload);
-        Answer answerUpdated = this.answerService.updateAnswer(answer, questionId, answerId, replierId, role);
+                                                  @PathVariable ERole role,
+                                                  @PathVariable FileCategory fileCategory){
+        Answer answerUpdated = this.answerService.updateAnswer(answerPayload, questionId, answerId, replierId, role, fileCategory);
         AnswerDto answerDto = this.util.getAnswerDto(answerUpdated);
         return new ResponseEntity<>(answerDto, HttpStatus.ACCEPTED);
     }

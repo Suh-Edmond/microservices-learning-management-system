@@ -4,10 +4,13 @@ package com.learningmanagementsystem.QuestionsAndAnswersService.controller;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.ERole;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.QuestionDto;
 import com.learningmanagementsystem.QuestionsAndAnswersService.dto.payload.QuestionPayload;
+import com.learningmanagementsystem.QuestionsAndAnswersService.model.FileCategory;
 import com.learningmanagementsystem.QuestionsAndAnswersService.model.Question;
+import com.learningmanagementsystem.QuestionsAndAnswersService.service.serviceImpl.FileStorageServiceImpl;
 import com.learningmanagementsystem.QuestionsAndAnswersService.service.serviceImpl.QuestionServiceImpl;
 import com.learningmanagementsystem.QuestionsAndAnswersService.util.MessageResponse;
 import com.learningmanagementsystem.QuestionsAndAnswersService.util.Util;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,22 +28,26 @@ public class QuestionsController {
     @Autowired
     private QuestionServiceImpl questionService;
     private Util util = new Util();
+    @Autowired
+    FileStorageServiceImpl fileStorageService;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    @PostMapping(path = "protected/users/{userId}/roles/{role}/courses/{courseId}/questions", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "protected/users/{userId}/roles/{role}/courses/{courseId}/questions/{fileCategory}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<MessageResponse> createQuestion(@Valid @ModelAttribute  QuestionPayload questionPayload,
-                                                          @PathVariable("courseId") String courseId,
                                                           @PathVariable("userId") String userId,
-                                                          @PathVariable("role") ERole role){
-        Question question = this.util.getQuestionFromQuestionPayload(questionPayload);
-        this.questionService.createQuestion(question, courseId, userId, role);
+                                                          @PathVariable("role") ERole role,
+                                                          @PathVariable("courseId") String courseId,
+                                                          @PathVariable("fileCategory") FileCategory fileCategory){
+        this.questionService.createQuestion(questionPayload, courseId, userId, role, fileCategory);
         return new ResponseEntity<>(new MessageResponse("success", "Create question successfully", new Date()), HttpStatus.CREATED);
     }
 
-    @GetMapping("public/questions-all")
-    public ResponseEntity<List<QuestionDto>> getAllQuestions(){
-        List<Question> questions = this.questionService.getAllQuestions();
-        List<QuestionDto> questionDtoList = this.util.getQuestionDtoList(questions);
-        return new ResponseEntity<>(questionDtoList, HttpStatus.OK);
+    @GetMapping("public/courses/questions-all")
+    public ResponseEntity<List<QuestionDto>> getAllQuestions(@RequestParam("courseId") String courseId){
+        List<Question> questions = this.questionService.getAllQuestions(courseId);
+        List<QuestionDto> questionDtoList1 = this.util.getQuestionDtoList(questions);
+        return new ResponseEntity<>(questionDtoList1, HttpStatus.OK);
     }
     @GetMapping("public/questions")
     public ResponseEntity<QuestionDto> getQuestion(@RequestParam("questionId") String questionId){
@@ -56,13 +63,13 @@ public class QuestionsController {
         return new ResponseEntity<>(questionDtoList, HttpStatus.OK);
     }
 
-    @PostMapping(path = "protected/users/{userId}/roles/{role}/courses/questions/{questionId}/update" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "protected/users/{userId}/roles/{role}/courses/questions/{questionId}/{fileCategory}/update/" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public  ResponseEntity<QuestionDto> updateCourseQuestion(@Valid @ModelAttribute QuestionPayload questionPayload,
                                                              @PathVariable("questionId") String questionId,
+                                                             @PathVariable("courseId") String courseId,
                                                              @PathVariable("userId") String userId,
                                                              @PathVariable("role") ERole role){
-        Question question = this.util.getQuestionFromQuestionPayload(questionPayload);
-        Question updatedQuestion = this.questionService.updateQuestion(question, questionId, userId, role);
+        Question updatedQuestion = this.questionService.updateQuestion(questionPayload, courseId, questionId, userId, role);
         QuestionDto questionDto = this.util.getQuestionDto(updatedQuestion);
         return new ResponseEntity<>(questionDto, HttpStatus.ACCEPTED);
     }
