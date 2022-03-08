@@ -23,8 +23,5 @@ public class AnswerPayload {
     @NotNull
     @NotBlank
     private String details;
-    @NotNull
-    @NotBlank
-    private String replierId;
     private MultipartFile image;
 }

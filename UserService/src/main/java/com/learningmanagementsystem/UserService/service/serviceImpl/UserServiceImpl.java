@@ -17,6 +17,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CourseServiceImpl courseService;
 
     @Override
     public List<User> getAllTeachers() {
@@ -39,7 +41,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllStudentWithInfoEnrolledCourse(List<String> studentIds) {
+    public List<User> getAllStudentWithInfoEnrolledCourse(String courseId) {
+        List<String> studentIds = this.courseService.getAllStudentsEnrolledToCourseFromCourseService(courseId);
         List<User> students = studentIds.stream().map(id -> this.getStudent(id)).collect(Collectors.toList());
         return students;
     }
@@ -58,7 +61,20 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getStudent(String userId){
-        Optional<User> user = this.userRepository.findById(userId);
+        Optional<User> user = this.userRepository.findAll().
+                stream().
+                filter(user1 -> user1.getId().equals(userId) && user1.getRole().equals(ERole.ROLE_STUDENT.toString())).
+                findFirst();
+        user.orElseThrow(() -> new NotFoundException("Resource not found"));
+        return user.get();
+    }
+
+    @Override
+    public User getTeacher(String userId) {
+        Optional<User> user = this.userRepository.findAll().
+                stream().
+                filter(user1 -> user1.getId().equals(userId) && user1.getRole().equals(ERole.ROLE_TEACHER.toString())).
+                findFirst();
         user.orElseThrow(() -> new NotFoundException("Resource not found"));
         return user.get();
     }

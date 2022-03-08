@@ -19,7 +19,7 @@ public class CourseNote  extends  BaseEntity{
     @Column(length = 60)
     private String Id;
     private String topic;
-    private String filePath;
+    private String file;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private  Course course;

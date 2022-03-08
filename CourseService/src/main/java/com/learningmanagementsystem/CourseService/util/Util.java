@@ -1,17 +1,18 @@
 package com.learningmanagementsystem.CourseService.util;
 
 import com.learningmanagementsystem.CourseService.dto.CourseDto;
+import com.learningmanagementsystem.CourseService.dto.CourseNoteDto;
+import com.learningmanagementsystem.CourseService.dto.CourseSyllabusDto;
 import com.learningmanagementsystem.CourseService.dto.payload.CoursePayload;
 import com.learningmanagementsystem.CourseService.model.Course;
+import com.learningmanagementsystem.CourseService.model.CourseNote;
+import com.learningmanagementsystem.CourseService.model.CourseSyllabus;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Component
 public class Util {
 
     private ModelMapper modelMapper;
@@ -24,19 +25,47 @@ public class Util {
         return uuid.toString();
     }
 
-    public List<CourseDto> getCourseDtoList(List<Course> courseList){
-        List<CourseDto> courses = courseList.stream().map(course -> this.getCourseDto(course)).collect(Collectors.toList());
-        return courses;
+    public CourseNote getCourseNoteFromPayload(CoursePayload coursePayload){
+
+        return null;
     }
 
     public CourseDto getCourseDto(Course course){
-        CourseDto courseDto = this.modelMapper.map(course, CourseDto.class);
+        CourseDto courseDto = new CourseDto();
+        courseDto.setId(course.getId());
+        courseDto.setTitle(course.getTitle());
+        courseDto.setLevel(course.getLevel());
+        courseDto.setDescription(course.getDescription());
+        courseDto.setPrice(course.getPrice());
+        courseDto.setStatus(course.isStatus());
+        courseDto.setCreatedAt(course.getCreatedAt());
+        courseDto.setUpdatedAt(course.getUpdatedAt());
         return courseDto;
     }
 
     public Course getCourseFromCoursePayload(CoursePayload coursePayload){
         Course course = this.modelMapper.map(coursePayload, Course.class);
         return course;
+    }
+
+    public CourseSyllabusDto getCourseSyllabusDto(CourseSyllabus courseSyllabus){
+        CourseSyllabusDto courseSyllabusDto = new CourseSyllabusDto();
+        courseSyllabusDto.setCourseId(courseSyllabus.getId());
+        courseSyllabusDto.setCourseId(courseSyllabus.getCourse().getId());
+        courseSyllabusDto.setCreatedAt(courseSyllabus.getCreatedAt());
+        courseSyllabusDto.setUpdatedAt(courseSyllabus.getUpdatedAt());
+        courseSyllabusDto.setId(courseSyllabus.getId());
+        return courseSyllabusDto;
+    }
+
+    public CourseNoteDto getCourseNoteDto(CourseNote courseNote){
+        CourseNoteDto courseNoteDto = new CourseNoteDto();
+        courseNoteDto.setId(courseNote.getId());
+        courseNoteDto.setCourseId(courseNote.getId());
+        courseNoteDto.setTopic(courseNote.getTopic());
+        courseNoteDto.setCreatedAt(courseNote.getCreatedAt());
+        courseNoteDto.setUpdatedAt(courseNote.getUpdatedAt());
+        return courseNoteDto;
     }
 
 
