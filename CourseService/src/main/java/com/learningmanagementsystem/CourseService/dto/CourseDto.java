@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,8 +19,10 @@ public class CourseDto {
     private String title;
     private String level;
     private String description;
-    private String courseImage;
+    private UploadFileResponse courseImage;
     private BigDecimal price;
     private boolean status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }

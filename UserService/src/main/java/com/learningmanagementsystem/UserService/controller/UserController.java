@@ -3,6 +3,7 @@ package com.learningmanagementsystem.UserService.controller;
 
 import com.learningmanagementsystem.UserService.Utils.Utils;
 import com.learningmanagementsystem.UserService.dto.UserDto;
+import com.learningmanagementsystem.UserService.model.ERole;
 import com.learningmanagementsystem.UserService.model.User;
 import com.learningmanagementsystem.UserService.service.serviceImpl.UserServiceImpl;
 import org.modelmapper.ModelMapper;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/api/v1/protected/")
 @RestController
@@ -24,7 +24,8 @@ public class UserController {
     ModelMapper modelMapper;
     private Utils utils = new Utils();
 
-    @GetMapping("teachers")
+
+    @GetMapping("teachers-all")
     public ResponseEntity<List<UserDto>> getAllTeachers(){
         List<User> users = this.userService.getAllTeachers();
         List<UserDto> userDtos = this.utils.getListUserDto(users);
@@ -32,7 +33,7 @@ public class UserController {
 
     }
 
-    @GetMapping("students")
+    @GetMapping("students-all")
     public ResponseEntity<List<UserDto>> getStudents() {
         List<User> users = this.userService.getAllStudents();
         List<UserDto> userDtos = this.utils.getListUserDto(users);
@@ -40,21 +41,36 @@ public class UserController {
     }
 
     @DeleteMapping("users")
-    public ResponseEntity<?>  deleteUser(@RequestParam("userId") String userId){
-        this.userService.deleteUser(userId);
-        return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+    public ResponseEntity<?>  deleteUser(@RequestParam("userId") String userId, @RequestParam("role") ERole role){
+        this.userService.deleteUser(userId, role.toString());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("users")
-    public ResponseEntity<UserDto>  getUser(@RequestParam("userId") String userId){
-        UserDto userDto = this.modelMapper.map(this.userService.getUser(userId), UserDto.class);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+    public UserDto  getUser(@RequestParam("userId") String userId, @RequestParam("role") ERole role){
+        UserDto userDto = this.modelMapper.map(this.userService.getUser(userId, role.toString()), UserDto.class);
+        return userDto;
     }
 
-//    @GetMapping("students/courses")
-//    public List<UserDto> getAllStudentEnrollCourse(@RequestParam("courseId") String courseId){
-//        List<UserDto> userDtos = this.userService.getAllStudentEnrolledCourse(couse)
-//    }
+    @GetMapping("students/courses")
+    public ResponseEntity<List<UserDto>> getAllStudentEnrollCourse(@RequestParam("courseId") String courseId){
+        List<User> users = this.userService.getAllStudentWithInfoEnrolledCourse(courseId);
+        List<UserDto> userDtos = this.utils.getListUserDto(users);
+        return new ResponseEntity<>(userDtos, HttpStatus.OK);
+    }
 
+    @GetMapping("students")
+    public UserDto getStudent(@RequestParam("userId") String userId){
+        User user = this.userService.getStudent(userId);
+        UserDto userDto = this.modelMapper.map(user, UserDto.class);
+        return userDto;
+    }
+
+    @GetMapping("teachers")
+    public UserDto getTeacher(@RequestParam("userId") String userId){
+        User user = this.userService.getTeacher(userId);
+        UserDto userDto = this.modelMapper.map(user, UserDto.class);
+        return userDto;
+    }
 
 }

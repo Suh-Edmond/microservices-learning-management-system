@@ -1,5 +1,9 @@
 package com.learningmanagementsystem.CourseService.service.serviceImpl;
 
+import com.learningmanagementsystem.CourseService.dto.CourseDto;
+import com.learningmanagementsystem.CourseService.dto.FileCategory;
+import com.learningmanagementsystem.CourseService.dto.UploadFileResponse;
+import com.learningmanagementsystem.CourseService.dto.UserDto;
 import com.learningmanagementsystem.CourseService.exception.ForbiddenException;
 import com.learningmanagementsystem.CourseService.exception.ResourceAlreadyExistException;
 import com.learningmanagementsystem.CourseService.exception.ResourceNotFoundException;
@@ -14,6 +18,8 @@ import com.learningmanagementsystem.CourseService.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +35,14 @@ public class CourseServiceImpl implements CourseService {
     TeachCourseRepository teachCourseRepository;
     @Autowired
     EnrollCourseRepository  enrollCourseRepository;
+    @Autowired
+    private UserServiceImpl userService;
+    @Autowired
+    private FileStorageServiceImpl fileStorageService;
     Util util = new Util();
 
     @Override
-    public void createCourse(Course course, String userId) {
-        //need to make a check to see if user id is valid
+    public Course createCourse(Course course, String userId) {
         course.setId(util.generateId());
         course.setStatus(false);
         Course createdCourse;
@@ -42,10 +51,27 @@ public class CourseServiceImpl implements CourseService {
         } catch (DataIntegrityViolationException exception) {
             throw new ResourceAlreadyExistException("Course Title already exist");
         }
+        this.addTeacherCourse(userId, createdCourse.getId());
+
+        return createdCourse;
+    }
+
+    @Override
+    public void uploadFile(String courseId, MultipartFile file, FileCategory fileCategory) {
+        Optional<Course> course = this.courseRepository.findById(courseId);
+        course.orElseThrow(()-> new ResourceNotFoundException("Resource not found with courseId:"+ courseId));
+        course.get().setCourseImage(StringUtils.cleanPath(file.getOriginalFilename()));
+        this.fileStorageService.uploadFile(course.get().getTitle(), fileCategory, file);
+        this.courseRepository.save(course.get());
+    }
+
+    @Override
+    public void addTeacherCourse(String userId, String courseId) {
         TeachCourse teachCourse = new TeachCourse();
         teachCourse.setId(util.generateId());
-        teachCourse.setCourseId(createdCourse.getId());
-        teachCourse.setUserId(userId);
+        teachCourse.setCourseId(courseId);
+        UserDto userDto = this.userService.getTeacherFromUserService(userId);
+        teachCourse.setUserId(userDto.getId());
         teachCourseRepository.save(teachCourse);
     }
 
@@ -56,7 +82,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAllCourseByTeacher(String userId) {
+    public List<Course> getAllCoursesByTeacher(String userId) {
         List<Course> courseList = new ArrayList<>();
         List<TeachCourse> teachCourses = teachCourseRepository.
                 findAll().
@@ -104,10 +130,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getTeacherCourse(String courseId, String userId) {
+        UserDto userDto = this.userService.getTeacherFromUserService(userId);
         Course course = this.getCourse(courseId);
         Optional<TeachCourse> teachCourse = teachCourseRepository.findAll().
                 stream().
-                filter(teachCourse1 -> teachCourse1.getCourseId().equals(course.getId()) && teachCourse1.getUserId().equals(userId)).
+                filter(teachCourse1 -> teachCourse1.getCourseId().equals(course.getId()) && teachCourse1.getUserId().equals(userDto.getId())).
                 findFirst();
         teachCourse.orElseThrow(() -> new ForbiddenException("You don't have permission to access this resource"));
         return course;
@@ -115,6 +142,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void enrollStudentToCourse(String courseId, String userId) {
+        UserDto userDto = this.userService.getStudentFromUserService(userId);
         Course course = this.getCourse(courseId);
         if(!course.isStatus()){
             throw  new ForbiddenException("This Course not is currently not available for enrollment");
@@ -122,7 +150,7 @@ public class CourseServiceImpl implements CourseService {
         EnrollCourse enrollCourse = new EnrollCourse();
         enrollCourse.setId(this.util.generateId());
         enrollCourse.setCourseId(course.getId());
-        enrollCourse.setUserId(userId);
+        enrollCourse.setUserId(userDto.getId());
         enrollCourseRepository.save(enrollCourse);
     }
 
@@ -145,13 +173,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getEnrolledCourseByStudent(String courseId, String userId) {
-        List<Course> courses = this.getEnrolledCoursesByStudent(userId);
+        UserDto userDto = this.userService.getStudentFromUserService(userId);
+        List<Course> courses = this.getEnrolledCoursesByStudent(userDto.getId());
         Optional<Course> course = courses.stream().filter(course1 -> course1.getId().equals(courseId)).findFirst();
         return course.get();
     }
 
     @Override
-    public List<Course> getAllByCourses(boolean status) {
+    public List<Course> getAllCoursesByStatus(boolean status) {
         List<Course> courses = this.courseRepository.
                 findAll().
                 stream().
@@ -164,27 +193,42 @@ public class CourseServiceImpl implements CourseService {
     public void approveCourse(String courseId) {
         Course course = this.getCourse(courseId);
         course.setStatus(true);
+        this.courseRepository.save(course);
     }
 
     @Override
     public void suspendCourse(String courseId) {
         Course course = this.getCourse(courseId);
         course.setStatus(false);
+        this.courseRepository.save(course);
     }
 
     @Override
-    public void removeStudentFromCourse(String courseId, String userId) {
+    public void removeStudentFromCourse(String courseId, String teacherId, String studentId) {
+        Course course = this.getTeacherCourse(courseId, teacherId);
+        UserDto enrolledStudent = this.userService.getStudentFromUserService(studentId);
         Optional<EnrollCourse> enrollCourse = this.enrollCourseRepository.findAll().
-                stream().filter(enrollCourse1 -> enrollCourse1.getCourseId().equals(courseId) && enrollCourse1.getUserId().equals(userId)).
+                stream().filter(enrollCourse1 -> enrollCourse1.getCourseId().equals(course.getId()) && enrollCourse1.getUserId().equals(enrolledStudent.getId())).
                 findFirst();
+        enrollCourse.orElseThrow(() -> new ResourceNotFoundException("Student is not enrolled to course"));
         this.enrollCourseRepository.delete(enrollCourse.get());
     }
 
     @Override
-    public List<String> getAllStudentsEnrollCourse(String courseId) {
-        List<String> studentIds = this.teachCourseRepository.findAll().
-                stream().filter(teachCourse -> teachCourse.getCourseId().equals(courseId)).map(teachCourse -> teachCourse.getUserId()).collect(Collectors.toList());
-        return studentIds;
+    public Course findCourseByTitle(String title) {
+        Optional<Course> course = this.courseRepository.findByTitle(title);
+        course.orElseThrow(() -> new ResourceNotFoundException("Resource not found with title "+title));
+        return course.get();
     }
+
+
+
+    public CourseDto generateCourseDto(Course course){
+        UploadFileResponse uploadFileResponse = this.fileStorageService.getCourseMaterial(course.getTitle(), FileCategory.IMAGES, course.getCourseImage());;
+        CourseDto courseDto = this.util.getCourseDto(course);
+        courseDto.setCourseImage(uploadFileResponse);
+        return  courseDto;
+    }
+
 
 }

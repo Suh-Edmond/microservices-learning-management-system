@@ -20,5 +20,5 @@ public class CourseSyllabus extends BaseEntity {
     private String Id;
     @ManyToOne(fetch = FetchType.LAZY)
     private  Course course;
-    private String filePath;
+    private String file;
 }
