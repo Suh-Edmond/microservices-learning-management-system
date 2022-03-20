@@ -26,5 +26,5 @@ public class QuestionPayload {
     @NotNull
     @NotBlank
     private String details;
-    private MultipartFile image;
+    private MultipartFile file;
 }

@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "file-storage-service", url ="http://10.0.0.16:7000/api/v1/protected/" )
+@FeignClient(name = "file-storage-service", url ="http://192.168.43.246:7000/api/v1/protected/" )
 public interface FileStorageProxy {
 
 

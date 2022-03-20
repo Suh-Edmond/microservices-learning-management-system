@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface FileStorageService {
     public void uploadCourseFiles(String courseName, FileCategory fileCategory, MultipartFile file);
-    public UploadFileResponse getCourseImage(String courseName, FileCategory fileCategory, String fileName);
+    public UploadFileResponse getCourseMaterial(String courseName, FileCategory fileCategory, String fileName);
     public List<UploadFileResponse> getCourseMaterials(String courseName, FileCategory fileCategory);
 }
