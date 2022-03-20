@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/v1/protected/")
+@RequestMapping("/USER-SERVICE/api/v1/protected/")
 @RestController
 public class UserController {
 
