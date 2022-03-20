@@ -16,7 +16,7 @@ import java.util.Date;
 
 @RestController
 @CrossOrigin()
-@RequestMapping("/api/v1/public/auth")
+@RequestMapping("/USER-SERVICE/api/v1/public/auth")
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
