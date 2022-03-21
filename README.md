@@ -93,6 +93,7 @@ The CourseService, UserService, QuestionAndAnswerService and FileStorageService 
 * Open/Unzipped all the projects and open each service(User,Course, QuestionAndAnswer, File services) in your IDE(intelliJ/eclipse)
 * Start your MySQL database server. 
   Remark: This project makes use of MySQL database server, so if you want to use another server, you can update the application.properties file of each     of the microservices. 
+* Create the following databases (course_service_db, user_service_db, question_answer_service_db)  
 * Run the services in the order
 * Run the Eureka-Naming Service and open [http://loclhost:8761] in the browser to view it
 * Run the FileStorageService and open [http://localhost:7000/swagger-ui/#/]  to view the api documentation.
