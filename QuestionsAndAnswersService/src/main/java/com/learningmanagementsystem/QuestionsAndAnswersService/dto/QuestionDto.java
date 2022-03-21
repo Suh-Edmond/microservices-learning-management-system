@@ -21,7 +21,6 @@ public class QuestionDto {
     private UploadFileResponse image;
     private String topic;
     private String details;
-    private List<Answer> answers;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

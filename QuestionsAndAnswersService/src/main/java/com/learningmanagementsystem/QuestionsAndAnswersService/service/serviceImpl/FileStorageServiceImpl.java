@@ -28,6 +28,9 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public void uploadCourseFiles(String courseName, FileCategory fileCategory, MultipartFile file) {
+        System.out.println(courseName);
+        System.out.println(fileCategory);
+        System.out.println(file);
         try {
           this.fileStorageProxy.uploadFiles(courseName, fileCategory, file);
         }catch (FeignException exception){
@@ -36,12 +39,12 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public UploadFileResponse getCourseImage(String courseName, FileCategory fileCategory, String fileName) {
+    public UploadFileResponse getCourseMaterial(String courseName, FileCategory fileCategory, String fileName) {
         UploadFileResponse response;
         try{
              response = this.fileStorageProxy.getCourseMaterial(courseName, fileCategory, fileName);
         }catch(FeignException feignException){
-            throw new CustomIOException("Error Occurred! Could not fetch file");
+            response = null;
         }
         return response;
     }
@@ -52,7 +55,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         try{
             responses = this.fileStorageProxy.getCourseMaterials(courseName, fileCategory);
         }catch(FeignException feignException){
-            throw new CustomIOException("Error Occurred! Could not fetch file");
+            responses = null;
         }
         return responses;
     }

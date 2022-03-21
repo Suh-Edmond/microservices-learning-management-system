@@ -12,6 +12,7 @@ import com.learningmanagementsystem.QuestionsAndAnswersService.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,22 +36,25 @@ public class QuestionServiceImpl implements QuestionService {
     public void createQuestion(QuestionPayload questionPayload, String courseId, String userId, ERole role, FileCategory fileCategory) {
         Question question = new Question();
         CourseDto courseDto = this.courseService.getCourseInfoFromCourseService(courseId);
-//        UserDto userDto = this.userService.getUserFromUserService(userId, role);
-//        question.setId(this.util.generateId());
-//        question.setCourseId(courseDto.getId());
-//        question.setUserId(userDto.getId());
-//        question.setTopic(questionPayload.getTopic());
-//        question.setDetails(questionPayload.getDetails());
-//        question.setImage(this.util.getFileName(questionPayload.getImage()));
-//        this.questionRepository.save(question);
-        System.out.println(courseDto.getTitle());
-        this.fileStorageService.uploadCourseFiles(courseDto.getTitle(), fileCategory, questionPayload.getImage());
+        UserDto userDto = this.userService.getUserFromUserService(userId, role);
+        question.setId(this.util.generateId());
+        question.setCourseId(courseDto.getId());
+        question.setUserId(userDto.getId());
+        question.setTopic(questionPayload.getTopic());
+        question.setDetails(questionPayload.getDetails());
+        question.setImage(this.util.getFileName(questionPayload.getFile()));
+        this.questionRepository.save(question);
+        this.fileStorageService.uploadCourseFiles(courseDto.getTitle(), fileCategory, questionPayload.getFile());
     }
 
     @Override
-    public List<Question> getAllQuestions(String courseId) {
+    public List<QuestionDto> getAllQuestions(String courseId) {
         List<Question> questions = this.questionRepository.findAll();
-        return questions;
+        List<QuestionDto> questionDtoList = new ArrayList<>();
+        questions.stream().forEach(question -> {
+            questionDtoList.add(this.generateQuestionDto(question));
+        });
+        return questionDtoList;
     }
 
 
@@ -62,36 +66,38 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<Question> getCourseQuestions(String courseId) {
+    public List<QuestionDto> getCourseQuestions(String courseId) {
         CourseDto courseDto = this.courseService.getCourseInfoFromCourseService(courseId);
-        List<Question> questions = this.questionRepository.findAll().
-                stream().
-                filter(question -> question.getCourseId().equals(courseDto.getId())).
-                collect(Collectors.toList());
-        return questions;
+        List<Question> questions = this.questionRepository.findByCourseId(courseDto.getId());
+        List<QuestionDto> questionDtoList = new ArrayList<>();
+        questions.stream().forEach(question -> {
+            questionDtoList.add(this.generateQuestionDto(question));
+        });
+        return questionDtoList;
     }
 
     @Override
-    public Question updateQuestion(QuestionPayload questionPayload, String courseId, String questionId,
+    public QuestionDto updateQuestion(QuestionPayload questionPayload, String courseId, String questionId,
                                    String userId,  ERole role) {
         CourseDto courseDto = this.courseService.getCourseInfoFromCourseService(courseId);
         UserDto userDto = this.userService.getUserFromUserService(userId, role);
-        Question question1 = this.getQuestion(questionId);
-        Question question2 = this.getUserQuestion(question1.getId(), userDto.getId());
-        question2.setTopic(questionPayload.getTopic());
-        question2.setDetails(questionPayload.getDetails());
-        question2.setImage(this.util.getFileName(questionPayload.getImage()));
-        Question updatedQuestion = this.questionRepository.saveAndFlush(question1);
-        this.fileStorageService.uploadCourseFiles(courseDto.getTitle(), QUESTIONS, questionPayload.getImage());
-        return updatedQuestion;
+        Question question = this.getQuestion(questionId);
+        Question userQuestion = this.getUserQuestion(question.getId(), userDto.getId());
+        userQuestion.setTopic(questionPayload.getTopic());
+        userQuestion.setDetails(questionPayload.getDetails());
+        userQuestion.setImage(this.util.getFileName(questionPayload.getFile()));
+        Question updatedQuestion = this.questionRepository.saveAndFlush(userQuestion);
+        this.fileStorageService.uploadCourseFiles(courseDto.getTitle(), QUESTIONS, questionPayload.getFile());
+        QuestionDto updatedQuestionDto = this.generateQuestionDto(updatedQuestion);
+        return updatedQuestionDto;
     }
 
     @Override
     public void deleteQuestion(String questionId, String userId, ERole role) {
         UserDto userDto = this.userService.getUserFromUserService(userId, role);
-        Question question1 = this.getQuestion(questionId);
-        Question question2 = this.getUserQuestion(question1.getId(), userDto.getId());
-        this.questionRepository.delete(question2);
+        Question question = this.getQuestion(questionId);
+        Question userQuestion = this.getUserQuestion(question.getId(), userDto.getId());
+        this.questionRepository.delete(userQuestion);
     }
 
     @Override
@@ -102,5 +108,14 @@ public class QuestionServiceImpl implements QuestionService {
                 findFirst();
         questionOptional.orElseThrow(() -> new ForbiddenException("Access denied! You can not modify a question created by another user"));
         return questionOptional.get();
+    }
+
+
+    public QuestionDto generateQuestionDto(Question question){
+        QuestionDto questionDto = this.util.getQuestionDto(question);
+        CourseDto  courseDto = this.courseService.getCourseInfoFromCourseService(question.getCourseId());
+        UploadFileResponse uploadFileResponse = this.fileStorageService.getCourseMaterial(courseDto.getTitle(), QUESTIONS, question.getImage());
+        questionDto.setImage(uploadFileResponse);
+        return questionDto;
     }
 }
