@@ -87,12 +87,12 @@ The CourseService, UserService, QuestionAndAnswerService and FileStorageService 
 * API-GATEWAY has been setup been needs to be completed and configured, so all requests do pass through the gateway to the respective service.
 * Add a docker-compose script to run all services
 * Finally the project is open for improvements and other new features.
-*
+* 
 ### To Run the Project:
 * Clone the project from the link or download the zip file.
 * Open/Unzipped all the projects and open each service(User,Course, QuestionAndAnswer, File services) in your IDE(intelliJ/eclipse)
 * Start your MySQL database server. 
-  Remark: This project makes use of MySQL database server, so if you want to use another server, you can update the application.properties file of each     of the microservices. 
+  This project makes use of MySQL database server, so if you want to use another server, you can update the application.properties file of each     of the microservices. 
 * Create the following databases (course_service_db, user_service_db, question_answer_service_db)  
 * Run the services in the order
 * Run the Eureka-Naming Service and open [http://loclhost:8761] in the browser to view it
