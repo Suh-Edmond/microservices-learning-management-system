@@ -88,7 +88,7 @@ The CourseService, UserService, QuestionAndAnswerService and FileStorageService 
 * Add a docker-compose script to run all services
 * Finally the project is open for improvements and other new features.
 *
-###To Run the Project:
+### To Run the Project:
 * Clone the project from the link or download the zip file.
 * Open/Unzipped all the projects and open each service(User,Course, QuestionAndAnswer, File services) in your IDE(intelliJ/eclipse)
 * Start your MySQL database server. 
