@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/COURSE-SERVICE/api/v1/protected/")
+@RequestMapping("/api/v1/protected/")
 public class CourseNoteController {
 
     @Autowired

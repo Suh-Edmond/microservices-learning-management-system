@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "file-storage-service")
+@FeignClient(name = "file-storage-service",  url="http://localhost:7000/api/v1/protected/")
 public interface FileStorageProxy {
 
     @PostMapping(path ="upload-files" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

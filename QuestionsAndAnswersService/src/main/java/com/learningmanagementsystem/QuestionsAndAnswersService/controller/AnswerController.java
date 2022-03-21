@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
-@RequestMapping("/QUESTION-AND-ANSWER-SERVICE/api/v1/")
+@RequestMapping("/api/v1/")
 @RestController
 public class AnswerController {
 

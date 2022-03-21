@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/FILE-STORAGE-SERVICE/api/v1/protected/")
+@RequestMapping("/api/v1/protected/")
 public class FileController {
 
     @Autowired
