@@ -1,13 +1,15 @@
 
 # Learning Management System API
- REST Microservice Architecture for a Learning Management System with SpringBoot, Cloud and three Microservices. This porject is objective at learning how to create microservices with spring boot. We seek to create a simple learning system with three users namely; Admin, Teachers, and Students.
- The Admin manages courses, teachers and students.
- Teachers can create a course, provide the course content(syllabus) and notes as pdf documents and also provide answers to questions that will be ask by students enrolled to the course. 
- Students can enroll to any course, download the course syllabus and notes, and ask or answer any questions related to the course notes.
+REST Microservice Architecture for a Learning Management System with SpringBoot, Cloud and three Microservices. This project is aim at learning how to create      Microservices using Spring boot,and Spring cloud, explore and appreciate the different Technologies and Tools that are use to develop systems that run using Microservice Architecture. 
+Hence, I seek to create a simple learning system with three users namely; Admin, Teachers, and Students.
+The Admin manages courses, teachers and students.
+Teachers can create a course, provide the course content(syllabus) and course notes as pdf documents, provide answers to questions that will be ask by students enrolled to the course. 
+Students can enroll to any course, download the course syllabus and notes, and ask or answer any questions related to the course notes.
 ## Microservices
 * User
 * Course
 * QuestionsAndAnswers
+* FileStorage Service
 ## Tools and Technologies
 * Springboot 2.5
 * Java 11
@@ -46,7 +48,7 @@
 * All variables must follow the camel-case style
 * All public endpoints should follow this convention: {server-name}/api/public/v1/{end-point-name}
 * All public endpoints should follow this convention: {server-name}/api/protected/v1/{end-point-name}
-### Endpoints to be created
+### Some of the Endpoints to be created
 * Register User( Teacher and Student) [public]
 * Login User ( Admin, Teacher, Student) [public]
 * Show user profile [protected]
@@ -70,10 +72,38 @@
 * Get all students of the system [protected]
 * Get all teachers of the system [protected]
 * Get all students enrolled in a course [protected]
+* Approve Teachers
 ### Project Architecture
-![Project Architecture](assets/ProjectArchitecture.png)
+![Project Architecture](assets/ProjectArchitectureUpdated.png)
 ### Project Database Design
 ![Project Architecture](assets/databaseDesign.png)
+
+### How to run Project.
+#### Work done so far:
+The CourseService, UserService, QuestionAndAnswerService and FileStorageService have been implemented. So users(Student, Teacher) can now be created, courses can be created and syllabus/notes provided for it, questions can be asked and answer provided, and finally, files under all categories(IMAGES,NOTES,SYLLABUSES,QUESTIONS,ANSWERS) can be uploaded and downloaded.
+#### TO DO
+* Authentication and Authorization. 
+  Note: All endpoints with the signature [ /api/v1/protected/ ] requires authentication/authorization, while those with  [/api/v1/public/] don't need       authentication/authorization.
+* API-GATEWAY has been setup been needs to be completed and configured, so all requests do pass through the gateway to the respective service.
+* Add a docker-compose script to run all services
+* Finally the project is open for improvements and other new features.
+* 
+### To Run the Project:
+* Clone the project from the link or download the zip file.
+* Open/Unzipped all the projects and open each service(User,Course, QuestionAndAnswer, File services) in your IDE(intelliJ/eclipse)
+* Start your MySQL database server. 
+  This project makes use of MySQL database server, so if you want to use another server, you can update the application.properties file of each     of the microservices. 
+* Create the following databases (course_service_db, user_service_db, question_answer_service_db)  
+* Run the services in the order
+* Run the Eureka-Naming Service and open [http://loclhost:8761] in the browser to view it
+* Run the FileStorageService and open [http://localhost:7000/swagger-ui/#/]  to view the api documentation.
+* Run the UserService and open [http://localhost:8000/swagger-ui/#/] to view the api documentation.
+* Run the CourseService and open [http://localhost:8001/swagger-ui/#/] to view the api documentation.
+* Run the QuestionAndAnswerService and open [http://localhost:8002/swagger-ui/#/] to view the api documentation.
+* You start by creating a some users with Teacher and Student roles, creating courses, uploading the notes/syllabus,assigning students to course, view the course notes/syllabuses and asking questions.
+  
+
+
 
 
 
