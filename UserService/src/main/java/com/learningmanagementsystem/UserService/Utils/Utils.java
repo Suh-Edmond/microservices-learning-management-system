@@ -11,25 +11,25 @@ import java.util.stream.Collectors;
 
 public class Utils {
 
-    private ModelMapper modelMapper;
-    public Utils(){
-        this.modelMapper = new ModelMapper();
+    private static ModelMapper modelMapper;
+    public  Utils(){
+        modelMapper = new ModelMapper();
     }
-    public String generateUserId(){
+    public static  String generateUserId(){
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
 
-    public Boolean checkConfirmPassword(String password, String confirmPassword) {
+    public static  Boolean checkConfirmPassword(String password, String confirmPassword) {
         if(password.equals(confirmPassword)){
             return true;
         }
         return false;
     }
-    public List<UserDto> getListUserDto(List<User> users){
+    public static List<UserDto> getListUserDto(List<User> users){
         List<UserDto> userDtos = users.
                 stream().
-                map(user-> this.modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+                map(user-> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
         return userDtos;
     }
 

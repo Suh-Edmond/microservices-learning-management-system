@@ -30,7 +30,7 @@ public class RegisterUserPayload {
 
     @NotNull
     @NotBlank
-    @Pattern(regexp =  "^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{3})[- ]?(\\d{3})$", message = "Invalid telephone")
+//    @Pattern(regexp =  "^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{3})[- ]?(\\d{3})$", message = "Invalid telephone")
     private String telephone;
 
     @NotNull

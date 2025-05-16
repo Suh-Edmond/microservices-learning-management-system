@@ -1,10 +1,11 @@
 package com.learningmanagementsystem.UserService.dto;
 
-import com.learningmanagementsystem.UserService.model.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +18,6 @@ public class UserDto {
     private String name;
     private String email;
     private String telephone;
-    private String role;
+    private List<String> role;
+
 }

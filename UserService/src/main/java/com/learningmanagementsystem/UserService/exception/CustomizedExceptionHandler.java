@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.Date;
 import java.util.HashMap;
 
-@RestController
-@ControllerAdvice
+//@RestController
+//@ControllerAdvice
 public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
@@ -24,23 +24,23 @@ public class CustomizedExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<?> handleForbiddenException(Exception exception, WebRequest webRequest){
-        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
-    }
+//    @ExceptionHandler(ForbiddenException.class)
+//    public ResponseEntity<?> handleForbiddenException(Exception exception, WebRequest webRequest){
+//        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
+//        return new ResponseEntity<>(exceptionResponse, HttpStatus.FORBIDDEN);
+//    }
 
-    @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity<?> handleUnauthorizedException(Exception exception, WebRequest webRequest){
-        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
-    }
+//    @ExceptionHandler(UnAuthorizedException.class)
+//    public ResponseEntity<?> handleUnauthorizedException(Exception exception, WebRequest webRequest){
+//        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
+//        return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
+//    }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity handleAnyOtherException(Exception exception, WebRequest webRequest){
-        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity handleAnyOtherException(Exception exception, WebRequest webRequest){
+//        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), webRequest.getDescription(false), new Date());
+//        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler(CustomizedBadCredentialsException.class)
     public ResponseEntity handleBadCredentialsException(Exception exception, WebRequest webRequest){

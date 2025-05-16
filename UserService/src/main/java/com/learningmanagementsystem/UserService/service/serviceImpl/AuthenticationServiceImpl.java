@@ -1,39 +1,28 @@
 package com.learningmanagementsystem.UserService.service.serviceImpl;
 
-import com.learningmanagementsystem.UserService.Utils.Utils;
-import com.learningmanagementsystem.UserService.exception.CustomizedBadCredentialsException;
-import com.learningmanagementsystem.UserService.model.ERole;
+import com.learningmanagementsystem.UserService.dto.CustomUserDetailsDTO;
+import com.learningmanagementsystem.UserService.exception.NotFoundException;
 import com.learningmanagementsystem.UserService.model.User;
 import com.learningmanagementsystem.UserService.repository.UserRepository;
-import com.learningmanagementsystem.UserService.service.AuthenticationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService {
-    @Autowired
-    private UserRepository userRepository;
-    private Utils utils = new Utils();
+@RequiredArgsConstructor
+public class AuthenticationServiceImpl implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
 
     @Override
-    public void createUser(User user) {
-        Boolean userNameExist = this.userRepository.existsByUsername(user.getUsername());
-        Boolean userEmailExist = this.userRepository.existsByEmail(user.getEmail());
-        if(userNameExist){
-            throw new CustomizedBadCredentialsException("User name already exist");
-        }
-        if(userEmailExist){
-            throw new CustomizedBadCredentialsException("User email already exist");
-        }
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        Boolean checkConfirmPassword = utils.checkConfirmPassword(user.getPassword(), user.getConfirmPassword());
-        user.setRole((user.getRole()));
-        if(!checkConfirmPassword){
-            throw new CustomizedBadCredentialsException("Password mismatch");
-        }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setId(utils.generateUserId());
-        userRepository.save(user);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByUsername(username);
+        user.orElseThrow(()-> new NotFoundException("No user found with username "+ username));
+        return new CustomUserDetailsDTO(user.get());
     }
 }
